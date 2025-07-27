@@ -1,0 +1,58 @@
+{
+  "name": "share-utils",
+  "version": "1.0.0",
+  "description": "This is the share utils project for dummydata and marketservice.",
+  "main": ".commitlintrc.js",
+  "scripts": {
+    "init": "npm install & npm run prepare",
+
+    "test": "echo \"Error: no test specified\" && exit 1",
+  
+    "lint": " eslint . --ext .js,.jsx",
+    "lint:fix": "eslint . --ext .js,.jsx --fix",
+    "lint:staged": "eslint-staged",
+
+    "@commitlint/cli": "^17.6.3",
+    "@commitlint/config-conventional": "^17.6.3",
+
+    "prepare": "husky install", 
+    "husky:add:pre-commit": "husky add .husky/pre-commit 'npm run lint:staged'", 
+    "husky:add:commit-msg": "husky add .husky/commit-msg 'npx --no -- commitlint --edit $1'", 
+
+    "commit": "cz"
+
+
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.jsx": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "keywords": [],
+  "author": "Fanni",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yinzi99/share-utils.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yinzi99/share-utils/issues"
+  },
+  "homepage": "https://github.com/share-utils/fp#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "eslint": "^9.32.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.3.0",
+    "husky": "^8.0.3",
+    "eslint-staged": "1.0.1",
+    "@commitlint/cli": "^17.6.3",
+    "@commitlint/config-conventional": "^17.6.3",
+    "cz-conventional-changelog": "^3.3.0"
+  }
+}
