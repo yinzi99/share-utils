@@ -2,7 +2,8 @@
   "name": "share-utils",
   "version": "1.0.0",
   "description": "This is the share utils project for dummydata and marketservice.",
-  "main": ".commitlintrc.js",
+  "main": "index.js",
+  "files": ["src/"],
   "scripts": {
     "init": "npm install & npm run prepare",
     "test": "jest",
