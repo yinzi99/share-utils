@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # share-utils project
 
 This project contains the common utils used in market service and dummydata project.
@@ -31,4 +30,3 @@ This class defines the function which used to generate the response.
 | errorResponse | generate the error response | `errorResponse(res, message)` |
 =======
 
->>>>>>> d8dee0b14e1e74b6c8843bbd155d12149c923623
