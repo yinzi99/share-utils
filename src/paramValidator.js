@@ -1,4 +1,4 @@
-const { allowedStockSort, allowedFundSort, validOrders, defaultStockSort, defaultFundSort, defaultOrder, defaultLimit, defaultPage} = require('./constant');
+const { allowedStockSort, allowedFundSort, validOrders, defaultStockSort, defaultFundSort, defaultOrder, defaultLimit, defaultPage} = require('./constant.js');
 
 
 function validateOfGetAll(req, type) {
