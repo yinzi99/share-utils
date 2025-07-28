@@ -1,71 +1,71 @@
 const { describe, it, expect } = require('@jest/globals');
-const  paramValidator = require("../src/paramValidator");
+const paramValidator = require("../src/paramValidator");
+const { BusinessError } = require('../src/errors'); // 导入错误类
 
+// 从paramValidator获取常量
+const allowedFundSort = paramValidator.allowedFundSort;
+const allowedStockSort = paramValidator.allowedStockSort;
 
- console.log(paramValidator);
- let allowedFundSort = paramValidator.allowedFundSort;
- let allowedStockSort = paramValidator.allowedStockSort;
- let req_stock= {page: 1, limit: 20, sort: 'pe_ratio', order: 'desc'};
- let req_fund = {page: 1, limit: 20, sort: 'change_percent', order: 'desc'};
+// 测试用例数据
+const req_stock = { query: { page: 1, limit: 20, sort: 'pe_ratio', order: 'desc' } };
+const req_fund = { query: { page: 1, limit: 20, sort: 'change_percent', order: 'desc' } };
 
 describe("sort validater", () => {
- 
   it("should return the real stock sort parameters", () => {
-    expect(paramValidator.validateSort(req_stock.sort, allowedStockSort)).toBe('pe_ratio');
+    expect(paramValidator.validateSort(req_stock.query.sort, allowedStockSort)).toBe('pe_ratio');
   });
 
   it("should return the real fund sort parameters", () => {
-    expect(paramValidator.validateSort(req_fund.sort, allowedFundSort)).toBe('change_percent');
+    expect(paramValidator.validateSort(req_fund.query.sort, allowedFundSort)).toBe('change_percent');
   });
 
-  it("should validate the stock sort is empty, return the default sort", () => {
-    expect(paramValidator.validateSort("", allowedStockSort)).toBe(allowedStockSort[0]);
+  it("should throw error when stock sort is empty", () => {
+    expect(() => paramValidator.validateSort("", allowedStockSort)).toThrow(BusinessError);
   });
 
-  it("should validate the stock sort is invalid, return the default sort", () => {
-    expect(paramValidator.validateSort("abc", allowedStockSort)).toBe(allowedStockSort[0]);
+  it("should throw error when stock sort is invalid", () => {
+    expect(() => paramValidator.validateSort("abc", allowedStockSort)).toThrow(BusinessError);
   });
 
-  it("should validate the Fund sort is invalid, return the default sort", () => {
-    expect(paramValidator.validateSort('abc', allowedFundSort)).toBe(allowedFundSort[0]);
+  it("should throw error when Fund sort is invalid", () => {
+    expect(() => paramValidator.validateSort('abc', allowedFundSort)).toThrow(BusinessError);
   });
 });
 
-
-
 describe("page and limit validater", () => {
-  
   it("should return the real page number", () => {
     expect(paramValidator.validatePage(2)).toBe(2);
+    expect(paramValidator.validatePage('3')).toBe(3); // 支持字符串数字
   });
 
-  it("should return the default page number when page is invalid", () => {
-    expect(paramValidator.validatePage(-1)).toBe(1);
-    expect(paramValidator.validatePage(0)).toBe(1);
-    expect(paramValidator.validatePage('abc')).toBe(1);
+  it("should throw error when page is invalid", () => {
+    expect(() => paramValidator.validatePage(-1)).toThrow(BusinessError);
+    expect(() => paramValidator.validatePage(0)).toThrow(BusinessError);
+    expect(() => paramValidator.validatePage('abc')).toThrow(BusinessError);
   });
 
   it("should return the real limit number", () => {
     expect(paramValidator.validateLimit(50)).toBe(50);
+    expect(paramValidator.validateLimit('100')).toBe(100); // 支持字符串数字
   });
 
-  it("should return the default limit number when limit is invalid", () => {
-    expect(paramValidator.validateLimit(-10)).toBe(20);
-    expect(paramValidator.validateLimit(0)).toBe(20);
-    expect(paramValidator.validateLimit('abc')).toBe(20);
-    expect(paramValidator.validateLimit(2000)).toBe(20); // assuming max limit is 1000
+  it("should throw error when limit is invalid", () => {
+    expect(() => paramValidator.validateLimit(-10)).toThrow(BusinessError);
+    expect(() => paramValidator.validateLimit(0)).toThrow(BusinessError);
+    expect(() => paramValidator.validateLimit('abc')).toThrow(BusinessError);
+    expect(() => paramValidator.validateLimit(2000)).toThrow(BusinessError);
   });
 });
 
 describe("order validater", () => {
-  it("should return the real order", () => {
+  it("should return the real order (uppercase)", () => {
     expect(paramValidator.validateOrder('ASC')).toBe('ASC');
-    expect(paramValidator.validateOrder('DESC')).toBe('DESC');
+    expect(paramValidator.validateOrder('desc')).toBe('DESC');
   });
 
-  it("should return the default order when order is invalid", () => {
-    expect(paramValidator.validateOrder('abc')).toBe('ASC');
-    expect(paramValidator.validateOrder('')).toBe('ASC');
+  it("should throw error when order is invalid", () => {
+    expect(() => paramValidator.validateOrder('abc')).toThrow(BusinessError);
+    expect(() => paramValidator.validateOrder('')).toThrow(BusinessError);
   });
 });
 
@@ -74,13 +74,12 @@ describe("code validater", () => {
     expect(paramValidator.validateCode('123456')).toBe('123456');
   });
 
-  it("should throw an error when code is invalid", () => {
-    expect(() => paramValidator.validateCode('abc')).toThrow('Invalid stock code');
-    expect(() => paramValidator.validateCode('12345')).toThrow('Invalid stock code');
-    expect(() => paramValidator.validateCode('1234567')).toThrow('Invalid stock code');
+  it("should throw error when code is invalid", () => {
+    expect(() => paramValidator.validateCode('abc')).toThrow(BusinessError);
+    expect(() => paramValidator.validateCode('12345')).toThrow(BusinessError);
+    expect(() => paramValidator.validateCode('1234567')).toThrow(BusinessError);
   });
 });
-
 
 describe("validateOfGetAllStock", () => {
   it("should validate stock parameters correctly", () => {
@@ -94,14 +93,8 @@ describe("validateOfGetAllStock", () => {
     });
   });
 
-  it("should return default values for invalid stock parameters", () => {
+  it("should throw error when stock parameters are invalid", () => {
     const req = { query: { page: -1, limit: 2000, sort: 'invalid_sort', order: 'invalid_order' } };
-    const result = paramValidator.validateOfGetAllStock(req);
-    expect(result).toEqual({
-      page: 1,
-      limit: 20,
-      sort: allowedStockSort[0],
-      order: 'ASC'
-    });
+    expect(() => paramValidator.validateOfGetAllStock(req)).toThrow(BusinessError);
   });
 });

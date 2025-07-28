@@ -1,5 +1,5 @@
 const { allowedStockSort, allowedFundSort, validOrders, defaultStockSort, defaultFundSort, defaultOrder, defaultLimit, defaultPage} = require('./constant.js');
-
+const { BusinessError } = require('./errors');
 
 function validateOfGetAll(req, type) {
   if (type === 'stock') {
@@ -32,7 +32,7 @@ function validateOfGetAllFund(req) {
 function validatePage(page) {
   const pageNumber = Number(page);
   if (isNaN(pageNumber) || pageNumber < 1) {
-    return defaultPage; // 默认页码为1
+    throw new BusinessError('Invalid page number'); 
   }
   return pageNumber;
 }
@@ -40,28 +40,28 @@ function validatePage(page) {
 function validateLimit(limit) {
   const limitNumber = Number(limit);
   if (isNaN(limitNumber) || limitNumber < 1 || limitNumber > 1000) {
-    return defaultLimit; // 默认每页显示20条记录
+    throw new BusinessError('Invalid limit number'); 
   }
   return limitNumber;
 }
 
 function validateSort(sort, allowedSort) {
   if (!allowedSort.includes(sort)) {
-    return allowedSort[0]; // 默认排序为第一个允许的排序字段
+    throw new BusinessError(`Invalid sort parameter. Allowed values are: ${allowedSort.join(', ')}`);
   }
   return sort;
 }
 
 function validateOrder(order) {
   if (!validOrders.includes(order.toUpperCase())) {
-    return validOrders[0]; // 默认排序为降序
+    throw new BusinessError(`Invalid order parameter. Allowed values are: ${validOrders.join(', ')}`);
   }
   return order.toUpperCase();
 }
 
 function validateCode(code) {
   if (isNaN(code) || code.length !== 6) {
-    throw new Error('Invalid stock code');
+    throw new BusinessError('Invalid stock code. It must be a 6-digit number');
   }
   return code;
 }
