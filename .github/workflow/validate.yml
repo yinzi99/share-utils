@@ -1,0 +1,35 @@
+name: 代码和提交规范校验
+on: [pull_request, push] # 推送代码或创建PR时触发
+
+jobs:
+  # 校验提交信息是否符合规范
+  check-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 拉取所有历史提交，确保能检查所有提交信息
+
+      - name: 校验提交信息
+        uses: wagoid/commitlint-github-action@v5 # 使用开源工具检查提交信息
+        with:
+          configFile: .commitlintrc.js # 引用提交规范配置文件
+
+  # 校验代码格式（如ESLint）
+  lint-code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 安装Node环境
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18 # 适配项目的Node版本
+
+      - name: 安装依赖
+        run: npm install # 若用yarn/pnpm，替换为对应命令
+
+      - name: 执行ESLint检查
+        run: npm run lint # 假设package.json中配置了"lint": "eslint ."
