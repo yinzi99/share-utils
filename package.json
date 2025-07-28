@@ -17,7 +17,6 @@
     "husky:add:commit-msg": "husky add .husky/commit-msg 'npx --no -- commitlint --edit $1'",
     "commit": "cz"
   },
-  "type": "module",
   "lint-staged": {
     "*.js": [
       "eslint --fix",
