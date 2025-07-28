@@ -6,9 +6,9 @@ const successResponse = (res, data) => {
 };
 
 // 错误响应格式化
-const errorResponse = (res, message) => {
+const errorResponse = (res, data) => {
   res.status(400).json({
-    message
+    data
   });
 };
 
