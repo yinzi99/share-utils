@@ -1,7 +1,7 @@
 const { BusinessError } = require('./errors');
 const { errorResponse } = require('./responseFormatter');
 
-const errorHandler = (err, req, res) => {
+const errorHandler = (err, req, res, next) => {
   // 已知业务错误
   if (err instanceof BusinessError) {
     return errorResponse(res, err.message);
