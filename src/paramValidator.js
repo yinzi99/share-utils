@@ -60,7 +60,7 @@ function validateOrder(order) {
 }
 
 function validateCode(code) {
-  if (isNaN(code) || code.length !== 6) {
+  if ( typeof code !== 'string' || !/^\d{6}$/.test(code)) {
     throw new BusinessError('Invalid stock code. It must be a 6-digit number');
   }
   return code;
